@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FilmeService } from '../../services/filme-service';
-import { Filme } from '../../models/filme.model';
+import { Filme } from '../filme.module';
 
 @Component({
   selector: 'app-busca-filmes',

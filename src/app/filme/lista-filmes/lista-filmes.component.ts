@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FilmeService } from '../../services/filme-service';
-import { Filme, RespostaFilmes } from '../../models/filme.model';
+import { Filme, RespostaFilmes } from '../filme.module';
 
 @Component({
   selector: 'app-lista-filmes',
@@ -13,6 +13,9 @@ import { Filme, RespostaFilmes } from '../../models/filme.model';
   styleUrls: ['./lista-filmes.component.scss'],
 })
 export class ListaFilmesComponent implements OnInit {
+  verDetalhes(_t21: Filme) {
+    throw new Error('Method not implemented.');
+  }
   filmes: Filme[] = [];
   categoria: string = 'popular';
   pagina: number = 1;

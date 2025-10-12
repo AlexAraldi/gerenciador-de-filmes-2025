@@ -1,19 +1,17 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { ListaFilmesComponent } from './lista-filmes/lista-filmes.component';
-import { DetalhesFilmeComponent } from './detalhes-filme/detalhes-filme.component';
-import { BuscaFilmesComponent } from './busca-filmes/busca-filmes.component';
+export interface Filme {
+  id: number;
+  title: string;
+  release_date: string;
+  vote_average: number;
+  poster_path: string | null;
+  overview?: string; // Sinopse, opcional
+  videos?: { results: { key: string; name: string }[] }; // Trailers
+  credits?: { cast: { name: string; character: string }[] }; // Elenco
+}
 
-const routes: Routes = [
-  { path: '', component: ListaFilmesComponent },
-  { path: ':id', component: DetalhesFilmeComponent },
-];
-
-@NgModule({
-  declarations: [ListaFilmesComponent, DetalhesFilmeComponent, BuscaFilmesComponent],
-  imports: [CommonModule, FormsModule, HttpClientModule, RouterModule.forChild(routes)],
-})
-export class FilmeModule {}
+export interface RespostaFilmes {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: Filme[];
+}
