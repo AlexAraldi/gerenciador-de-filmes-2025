@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ListaFilmesComponent } from './filme/lista-filmes/lista-filmes.component';
+import { BuscaFilmesComponent } from './filme/busca-filmes/busca-filmes.component';
+import { DetalhesFilmeComponent } from './filme/detalhes-filme/detalhes-filme.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  standalone: true,
+  imports: [CommonModule, ListaFilmesComponent, BuscaFilmesComponent, DetalhesFilmeComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
-export class App {
-  protected readonly title = signal('gerenciador-de-filmes-2025');
+export class AppComponent {
+  title = 'gerenciador-de-filmes-2025';
 }

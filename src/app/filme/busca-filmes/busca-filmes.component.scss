@@ -1,0 +1,15 @@
+.container {
+  padding: 20px;
+
+  .input-group {
+    max-width: 500px;
+  }
+
+  .card {
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}

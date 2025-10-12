@@ -1,0 +1,69 @@
+<div class="movie-list container mt-4">
+  <h2 class="text-center mb-4">Lista de Filmes</h2>
+
+  <select (change)="mudarCategoria($event)" class="form-select mb-3 w-25 mx-auto d-block">
+    <option value="popular" [selected]="categoria === 'popular'">Populares</option>
+    <option value="top_rated" [selected]="categoria === 'top_rated'">Melhores Avaliados</option>
+  </select>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button (click)="paginaAnterior()" class="btn btn-secondary" [disabled]="pagina === 1">
+      Anterior
+    </button>
+    <span class="fw-bold">Página {{ pagina }} de {{ totalPaginas }}</span>
+    <button
+      (click)="proximaPagina()"
+      class="btn btn-secondary"
+      [disabled]="pagina === totalPaginas"
+    >
+      Próximo
+    </button>
+  </div>
+
+  <div class="row g-4" *ngIf="filmes.length > 0; else semFilmes">
+    <div class="col-md-3" *ngFor="let filme of filmes">
+      <div class="card h-100 shadow-sm">
+        <img
+          [src]="'https://image.tmdb.org/t/p/w500' + filme.poster_path"
+          [alt]="filme.title"
+          class="card-img-top"
+          *ngIf="filme.poster_path; else semImagem"
+        />
+        <ng-template #semImagem>
+          <div
+            class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white"
+          >
+            Sem Imagem
+          </div>
+        </ng-template>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ filme.title }}</h5>
+          <p class="card-text flex-grow-1">{{ filme.overview | slice : 0 : 100 }}...</p>
+          <p class="card-text">
+            <small class="text-muted">Data: {{ filme.release_date }}</small>
+          </p>
+          <p class="card-text fw-bold">
+            Nota:
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': filme.vote_average >= 7,
+                'bg-warning': filme.vote_average >= 5,
+                'bg-danger': filme.vote_average < 5
+              }"
+            >
+              {{ filme.vote_average }}/10
+            </span>
+          </p>
+          <button (click)="verDetalhes(filme)" class="btn btn-primary mt-auto">Ver Detalhes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #semFilmes>
+    <div class="text-center mt-5">
+      <p class="text-muted">Nenhum filme encontrado. Tente alterar a categoria ou página.</p>
+    </div>
+  </ng-template>
+</div>
