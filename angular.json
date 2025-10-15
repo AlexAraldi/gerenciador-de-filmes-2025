@@ -49,14 +49,15 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "scripts": ["bootstrap/dist/js/bootstrap.bundle.min.js"]
+            "scripts": ["bootstrap/dist/js/bootstrap.bundle.min.js"],
+            "outputPath": "dist/gerenciador-de-filmes-2025"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "600kB",
                   "maximumError": "1MB"
                 },
                 {
@@ -92,6 +93,15 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://alexaraldi.github.io/gerenciador-de-filmes-2025/",
+            "repo": "https://github.com/AlexAraldi/gerenciador-de-filmes-2025",
+            "name": "Alexander Araldi",
+            "email": "alexanderaraldi@gmail.com"
+          }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
