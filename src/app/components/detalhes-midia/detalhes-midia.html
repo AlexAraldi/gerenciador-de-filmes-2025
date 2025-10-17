@@ -32,6 +32,15 @@
           </article>
         </div>
       </section>
+
+      @if((videos$ | async)?.results; as videos) {
+      <section class="mt-5">
+        <h3>Trailer</h3>
+        <div class="ratio ratio-16x9 mt-4">
+          <iframe [src]="videos.at(0)?.key" frameborder="0"> </iframe>
+        </div>
+      </section>
+      }
     </main>
   </div>
 </div>

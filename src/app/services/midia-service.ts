@@ -5,12 +5,15 @@ import { environment } from '../../environments/environment';
 import { MidiaApiResponse } from '../models/midia-api-response';
 import { TipoMidia } from '../models/tipo-midia';
 import { DetalhesMidia } from '../models/detalhes-midia';
+import { VideosMidiaApiResponse } from '../models/videos-midia-api-response';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MidiaService {
   private readonly http = inject(HttpClient);
+  private readonly domSanitizer = inject(DomSanitizer);
   private readonly urlBase: string = 'https://api.themoviedb.org/3';
 
   public selecionarMidiasPopulares(tipo: TipoMidia) {
@@ -65,6 +68,33 @@ export class MidiaService {
       })
       .pipe(map((res) => this.mapearDetalhesMidia(res, tipo)));
   }
+
+  selecionarVideosMidiaPorId(tipo: TipoMidia, idMidia: number): Observable<VideosMidiaApiResponse> {
+    const tipoTraduzido = tipo === 'filme' ? 'movie' : 'tv';
+    const urlCompleto = `${this.urlBase}/${tipoTraduzido}/${idMidia}/videos?language=pt-BR`;
+    return this.http
+      .get<VideosMidiaApiResponse>(urlCompleto, {
+        headers: {
+          Authorization: environment.apiKey,
+        },
+      })
+      .pipe(map((res) => this.mapearVideosMidia(res)));
+  }
+
+  private mapearVideosMidia(x: VideosMidiaApiResponse): VideosMidiaApiResponse {
+    return {
+      ...x,
+      results: x.results
+        .filter((v) => v.site.toLowerCase() === 'youtube')
+        .map((v) => ({
+          ...v,
+          key: this.domSanitizer.bypassSecurityTrustResourceUrl(
+            `https://www.youtube.com/embed/${v.key}`
+          ),
+        })),
+    };
+  }
+
   private mapearDetalhesMidia(x: DetalhesMidia, tipo: TipoMidia): DetalhesMidia {
     return {
       ...x,
