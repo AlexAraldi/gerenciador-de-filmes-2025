@@ -1,9 +1,10 @@
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MidiaApiResponse } from '../models/midia-api-response';
 import { TipoMidia } from '../models/tipo-midia';
+import { DetalhesMidia } from '../models/detalhes-midia';
 
 @Injectable({
   providedIn: 'root',
@@ -23,18 +24,7 @@ export class MidiaService {
           Authorization: environment.apiKey,
         },
       })
-      .pipe(
-        map((x) => {
-          return {
-            ...x,
-            results: x.results.map((y) => ({
-              ...y,
-              poster_path: 'https://image.tmdb.org/t/p/w500' + y.poster_path,
-              backdrop_path: 'https://image.tmdb.org/t/p/original' + y.backdrop_path,
-            })),
-          };
-        })
-      );
+      .pipe(map((res) => this.mapearMidia(res, tipo)));
   }
 
   public selecionarMidiasMaisVotadas(tipo: TipoMidia) {
@@ -48,7 +38,7 @@ export class MidiaService {
           Authorization: environment.apiKey,
         },
       })
-      .pipe(map(this.mapImages));
+      .pipe(map((res) => this.mapearMidia(res, tipo)));
   }
 
   public selecionarFilmesEmCartaz() {
@@ -60,12 +50,46 @@ export class MidiaService {
           Authorization: environment.apiKey,
         },
       })
-      .pipe(map(this.mapImages));
+      .pipe(map(this.mapearFilme));
   }
+  public selecionarDetalhesMidiaPorId(tipo: TipoMidia, idMidia: number): Observable<DetalhesMidia> {
+    const tipoTraduzido = tipo === 'filme' ? 'movie' : 'tv';
 
-  private mapImages(x: MidiaApiResponse): MidiaApiResponse {
+    const urlCompleto = `${this.urlBase}/${tipoTraduzido}/${idMidia}?language=pt-BR`;
+
+    return this.http
+      .get<DetalhesMidia>(urlCompleto, {
+        headers: {
+          Authorization: environment.apiKey,
+        },
+      })
+      .pipe(map((res) => this.mapearDetalhesMidia(res, tipo)));
+  }
+  private mapearDetalhesMidia(x: DetalhesMidia, tipo: TipoMidia): DetalhesMidia {
     return {
       ...x,
+      media_type: tipo,
+      vote_average: x.vote_average * 10,
+      poster_path: 'https://image.tmdb.org/t/p/w500/' + x.poster_path,
+      backdrop_path: 'https://image.tmdb.org/t/p/original/' + x.backdrop_path,
+    };
+  }
+
+  private mapearMidia(x: MidiaApiResponse, tipoMidia: TipoMidia): MidiaApiResponse {
+    return {
+      ...x,
+      type: tipoMidia,
+      results: x.results.map((y) => ({
+        ...y,
+        poster_path: 'https://image.tmdb.org/t/p/w500' + y.poster_path,
+        backdrop_path: 'https://image.tmdb.org/t/p/original' + y.backdrop_path,
+      })),
+    };
+  }
+  private mapearFilme(x: MidiaApiResponse): MidiaApiResponse {
+    return {
+      ...x,
+      type: TipoMidia.Filme,
       results: x.results.map((y) => ({
         ...y,
         poster_path: 'https://image.tmdb.org/t/p/w500' + y.poster_path,
